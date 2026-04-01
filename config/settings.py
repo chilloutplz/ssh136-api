@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+from decouple import config, Csv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -10,20 +12,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xh(#7$$8(e4e$64$70*^zvvw$z)hdab=0%52lc+)8@$mm%8*$l'
+SECRET_KEY = config(
+    'SECRET_KEY',
+    default='django-insecure-dev-only-key'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".cloudtype.app", "0.0.0.0"]
-CSRF_TRUSTED_ORIGINS = ['https://*.cloudtype.app']
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,.cloudtype.app,0.0.0.0',
+    cast=Csv()
+)
 
-# Vue.js 개발 서버 주소(일반적으로 5173 또는 8080)를 허용 목록에 추가
-# 실제 Vue.js 서버의 URL을 확인하여 정확히 입력해야 합니다.
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://*.cloudtype.app',
+    cast=Csv()
+)
+
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:5173,http://127.0.0.1:5173',
+    cast=Csv()
+)
 
 # 인증 정보 (쿠키, 즉 CSRF 토큰)를 포함한 요청을 허용합니다.
 CORS_ALLOW_CREDENTIALS = True  # 필수 설정
@@ -92,11 +105,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ssh136',
-        'USER': 'root',
-        'PASSWORD': 'Vari3112##',
-        'HOST': 'svc.sel4.cloudtype.app',
-        'PORT': '30944',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
     }
     
     # 'default': {
@@ -167,3 +180,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# DEBUG=False일 때만 HTTPS 강제 및 secure cookie 설정이 적용되고, 로컬 개발(DEBUG=True)에서는 영향을 주지 않습니다.
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
