@@ -34,7 +34,7 @@ CSRF_TRUSTED_ORIGINS = config(
 
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://web-vue-mfxgk04tc9a7e6cf.sel3.cloudtype.apphttp://localhost:5173,http://127.0.0.1:5173',
+    default='https://web-vue-mfxgk04tc9a7e6cf.sel3.cloudtype.app,http://localhost:5173,http://127.0.0.1:5173',
     cast=Csv()
 )
 
