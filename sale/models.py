@@ -248,7 +248,7 @@ class DeliverySettlementDetail(BaseModel):
     매출 합계는 Sale.actual_sale_amount 집계로 계산.
     """
 
-    date = models.DateField("날짜", unique=True, db_index=True)
+    date = models.DateField("날짜", db_index=True)
 
     # ── 배민 ──────────────────────────────────────────────────
     baemin_commission_fee = models.DecimalField("배민 중개수수료",  max_digits=12, decimal_places=2, default=0)
