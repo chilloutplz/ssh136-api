@@ -152,7 +152,7 @@ class DeliverySettlementDetailSerializer(serializers.ModelSerializer):
     """정산 세부 항목 (773원 부가세 등 모든 비용)"""
     class Meta:
         model = DeliverySettlementDetail
-        fields = ['category', 'item_name', 'amount', 'api_code']
+        fields = ['date', 'category', 'item_name', 'amount', 'api_code']
 
 class DeliveryOrderItemOptionSerializer(serializers.ModelSerializer):
     """배달 품목별 옵션 상세"""
