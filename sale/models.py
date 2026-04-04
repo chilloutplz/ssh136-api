@@ -203,7 +203,46 @@ class SaleTender(BaseModel):
         return f"{self.tender_nm} {self.tender_amt:,}원"
 
 
-class DailySales(BaseModel):
+class DeliveryOrderExtra(BaseModel):
+    """배달 플랫폼 주문 부가 정보 및 정산 요약"""
+    sale = models.OneToOneField('Sale', on_delete=models.CASCADE, related_name="delivery_extra")
+    deposit_due_amount = models.IntegerField("입금예정금액", default=0)
+    deposit_due_date = models.DateField("입금예정일", null=True, blank=True)
+    pay_type = models.CharField("결제타입", max_length=20, null=True, blank=True)
+    receive_type = models.CharField("수령방법", max_length=20, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "배달 주문 부가정보"
+
+class DeliveryOrderItem(BaseModel):
+    # 기존 SaleItem과 연결 (연결 안 될 경우를 대비해 null=True)
+    sale_item = models.OneToOneField('SaleItem', on_delete=models.CASCADE, related_name="delivery_item", null=True)
+    # POS와 별개로 배민에서 내려온 원본 메뉴명 저장
+    menu_name = models.CharField("배민 메뉴명", max_length=200)
+    quantity = models.IntegerField("수량", default=1)
+    price = models.IntegerField("단가", default=0)
+    # 사장님이 강조하신 품목별 할인액
+    discount_price = models.IntegerField("품목할인금액", default=0)
+
+    class Meta:
+        verbose_name = "배달 주문 품목"
+
+class DeliveryOrderItemOption(BaseModel):
+    delivery_item = models.ForeignKey(DeliveryOrderItem, on_delete=models.CASCADE, related_name="options")
+    option_name = models.CharField("옵션명", max_length=100)
+    option_price = models.IntegerField("옵션금액", default=0)
+    option_discount_price = models.IntegerField("옵션할인금액", default=0)
+
+class DeliverySettlementDetail(BaseModel):
+    """배달 플랫폼 정산 세부 내역 (항목별 쪼개기)"""
+    sale = models.ForeignKey('Sale', on_delete=models.CASCADE, related_name="settlement_details")
+    category = models.CharField("정산분류", max_length=50)
+    item_name = models.CharField("항목명", max_length=100)
+    amount = models.IntegerField("금액")
+    api_code = models.CharField("항목코드", max_length=50, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "배달 정산 상세"
     """
     일별 정산 — 배달 플랫폼 수수료 (스크래핑).
     매출 합계는 Sale.actual_sale_amount 집계로 계산.
