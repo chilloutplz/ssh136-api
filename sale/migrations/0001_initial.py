@@ -13,32 +13,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='DailySales',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=True)),
-                ('date', models.DateField(db_index=True, unique=True, verbose_name='날짜')),
-                ('baemin_commission_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='배민 중개수수료')),
-                ('baemin_delivery_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='배민 배달대행비')),
-                ('baemin_ad_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='배민 광고비')),
-                ('baemin_vat', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='배민 VAT')),
-                ('baemin_other_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='배민 기타수수료')),
-                ('coupang_commission_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='쿠팡 중개수수료')),
-                ('coupang_delivery_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='쿠팡 배달대행비')),
-                ('coupang_ad_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='쿠팡 광고비')),
-                ('coupang_other_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='쿠팡 기타수수료')),
-                ('yogiyo_commission_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='요기요 중개수수료')),
-                ('yogiyo_delivery_fee', models.DecimalField(decimal_places=2, default=0, max_digits=12, verbose_name='요기요 배달대행비')),
-            ],
-            options={
-                'verbose_name': '일별 정산',
-                'verbose_name_plural': '일별 정산',
-                'ordering': ['-date'],
-            },
-        ),
-        migrations.CreateModel(
             name='Store',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
